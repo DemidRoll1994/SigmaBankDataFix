@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static by.samtsov.Main.LOG;
+
 public class DepartmentParser {
     public static List<Department> separateToDepartments(List<String> lines) {
         HashMap<Long, Department> departments = new HashMap<>();
@@ -24,7 +26,16 @@ public class DepartmentParser {
                 departments.get(employee.getManagerId()).addEmployee(employee);
             }
         }
-        return new ArrayList(departments.values());
+        List<Department> departmentsList = new ArrayList(departments.values());
+        for (int i=0;i<departmentsList.size();i++) {
+            if (departmentsList.get(i).getManager()==null){
+                for (Employee emp: departmentsList.get(i).getEmployees()) {
+                    LOG.error(emp.toString());
+                }
+                departmentsList.remove(i--);
+            }
+        }
+        return departmentsList;
     }
 
 
